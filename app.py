@@ -4,7 +4,7 @@ import RPi.GPIO as GPIO
 import time
 from apscheduler.schedulers.background import BackgroundScheduler
 import requests
-
+GPIO.setwarnings(False)
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(3,GPIO.OUT, initial=GPIO.LOW)
@@ -73,7 +73,6 @@ def resistance():
             elif count<70000 and IS_AUTO[i]:
                 url_to_post=f"http://0.0.0.0:5000/maison/rideaux/{i+1}/1"
                 requests.post(url_to_post)
-    print(rc_count())
     
 for i in rideaux:
     setupangle(90,i)
@@ -216,7 +215,7 @@ def masterid(etat):
 
 
 if __name__=='__main__':
-    app.run(debug=True,port=8080,host='0.0.0.0')
+    app.run(debug=True,port=5000,host='0.0.0.0')
     
         
 
