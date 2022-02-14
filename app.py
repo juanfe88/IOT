@@ -154,19 +154,19 @@ def ouverture_rideau(etat,piece):
     
 @app.route('/maison/auto', methods=['GET'])
 def isautol():
-    respones={i+"_mode_auto":j for i,j in zip(libeles,IS_AUTO)}
+    respones={i+"_mode_auto":"Activé" if j else "Désactivé" for i,j in zip(libeles,IS_AUTO)}
     return jsonify(respones),200
 
-@app.route('/maison/master/<int:piece>/<int:etat>', methods=['POST'])
+@app.route('/maison/auto/<int:piece>/<int:etat>', methods=['POST'])
 def setautop(piece,etat):
-    if piece >3 or piece<0:
+    if piece >4 or piece<0:
         return "Piece non valide",404
     if etat==1:
         IS_AUTO[piece-1]=True
-        return jsonify({libeles[piece-1]+"_mode_auto":True}),200
+        return jsonify({libeles[piece-1]+"_mode_auto":"Activé"}),200
     elif etat==0:
         IS_AUTO[piece-1]=False
-        return jsonify({libeles[piece-1]+"_mode_auto":False}),200
+        return jsonify({libeles[piece-1]+"_mode_auto":"Desactivé"}),200
     else:
         return "Etat non valise",404
 
@@ -175,12 +175,12 @@ def setautol(etat):
     if etat ==1:
         for i in range(4):
             IS_AUTO[i]=True
-        respones={i+"_mode_auto":j for i,j in zip(libeles,IS_AUTO)}
+        respones={i+"_mode_auto":"Activé" if j else "Désactivé" for i,j in zip(libeles,IS_AUTO)}
         return jsonify(respones),200
     elif etat==0:
         for i in range(4):
             IS_AUTO[i]=False
-        respones={i+"_mode_auto":j for i,j in zip(libeles,IS_AUTO)}
+        respones={i+"_mode_auto":"Activé" if j else "Désactivé" for i,j in zip(libeles,IS_AUTO)}
         return jsonify(respones),200
     else:
         return 'Numero de piece non valide',404
