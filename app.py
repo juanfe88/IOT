@@ -59,10 +59,10 @@ def resistance():
             GPIO.output(i,GPIO.LOW)
         elif j==GPIO.HIGH and count<70000:
             allum_desir[pieces.index(i)]=False
-    if count>70000 and IS_AUTO.all():
+    if count>70000 and all(IS_AUTO):
         url_to_post=f"http://0.0.0.0:5000/maison/rideaux/master/0"
         requests.post(url_to_post)
-    elif count<70000 and IS_AUTO.all():
+    elif count<70000 and all(IS_AUTO):
         url_to_post=f"http://0.0.0.0:5000/maison/rideaux/master/1"
         requests.post(url_to_post)
     else:
@@ -134,11 +134,15 @@ def ouverture_rideau(etat,piece):
         rid=None
     condition=etat_rid[piece-1] if rid is not None else None
     if etat ==1:
-        print(condition)
         if condition=="Fermé":
             setupangle(90,rid)
             setupangle(180,rid)
             etat_rid[rideaux.index(rid)]="Ouvert"
+            if condition is not None:
+                return jsonify({libeles[piece-1]:etat_rid[piece-1]}),200
+            else:
+                return 'Piece non valide',404
+        else:
             if condition is not None:
                 return jsonify({libeles[piece-1]:etat_rid[piece-1]}),200
             else:
@@ -148,9 +152,15 @@ def ouverture_rideau(etat,piece):
             setupangle(90,rid)
             setupangle(0,rid)
             etat_rid[rideaux.index(rid)]="Fermé"
-        return jsonify({libeles[rideaux.index(rid)]:"Fermé"})if condition is not None else 'Hola',200
+        if condition is not None:
+            return jsonify({libeles[rideaux.index(rid)]:"Fermé"}),200
+        else:
+            return jsonify('non trouve'),404
     else:
-        return jsonify({libeles[rideaux.index(rid)]:"État non valide"})if rid is not None else 'To come',200
+        if rid is not None:
+            return jsonify({libeles[rideaux.index(rid)]:"État non valide"})
+        else:
+            return jsonify('To come'),404
     
 @app.route('/maison/auto', methods=['GET'])
 def isautol():
